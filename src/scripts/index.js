@@ -1,9 +1,13 @@
 import "../pages/index.css";
 import { initialCards } from "./cards.js";
-import { openPopup, closePopup } from "../components/modal.js";
+import {
+  openPopup,
+  closePopup,
+  handleOverlayClick,
+} from "../components/modal.js";
 import { createCard, handleLike, handleDelete } from "../components/card.js";
 
-const placesList = document.querySelector(".places__list");
+const cardsContainer = document.querySelector(".places__list");
 const addButton = document.querySelector(".profile__add-button");
 const profileDescription = document.querySelector(".profile__description");
 const profileEditButton = document.querySelector(".profile__edit-button");
@@ -54,31 +58,25 @@ function handleAddCardSubmit(evt) {
     handleLike,
     handleDelete
   );
-  placesList.prepend(newCard);
+  cardsContainer.prepend(newCard);
 
   formNewPlace.reset();
   closePopup(popupTypeNewCard);
 }
 
-function initPopupCloseHandlers() {
-  document.querySelectorAll(".popup__close").forEach((button) => {
-    button.addEventListener("click", () => {
-      const popup = button.closest(".popup");
-      closePopup(popup);
-    });
+document.querySelectorAll(".popup__close").forEach((button) => {
+  button.addEventListener("click", () => {
+    const popup = button.closest(".popup");
+    closePopup(popup);
   });
+});
 
-  document.querySelectorAll(".popup").forEach((popup) => {
-    popup.addEventListener("click", (event) => {
-      if (event.target === popup) {
-        closePopup(popup);
-      }
-    });
-  });
-}
+document.querySelectorAll(".popup").forEach((popup) => {
+  popup.addEventListener("mousedown", handleOverlayClick);
+});
 
 initialCards.forEach((card) => {
-  placesList.append(
+  cardsContainer.append(
     createCard(card, handleCardClick, handleLike, handleDelete)
   );
 });
