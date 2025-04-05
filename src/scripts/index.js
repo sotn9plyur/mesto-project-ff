@@ -94,4 +94,3 @@ addButton.addEventListener("click", () => {
 formEditProfile.addEventListener("submit", handleEditProfileSubmit);
 formNewPlace.addEventListener("submit", handleAddCardSubmit);
 
-initPopupCloseHandlers();
