@@ -14,19 +14,18 @@
   opacity: 0.8;
 }
 
-.profile__image-avatar-edit {
+.profile__image-avtar-edit {
   width: 100%;
   height: 100%;
-  background: transparent url('../../../images/avatar.svg') center no-repeat;
+  background: transparent url("../../../images/avatar.svg") center no-repeat;
   border-radius: 50%;
-  border:none;
+  border: none;
   transition: 0.3s;
   cursor: pointer;
   opacity: 0;
-  z-index: 4;
 }
 
-.profile__image-avatar-edit:hover{
+.profile__image-avtar-edit:hover {
   opacity: 1;
   background-color: rgb(0, 0, 0, 0.8);
 }
