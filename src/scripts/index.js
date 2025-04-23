@@ -13,6 +13,16 @@ import {
   updateAvatar
 } from './api.js';
 
+// Конфигурация валидации (перенесена из validation.js)
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+};
+
 // DOM элементы
 const elements = {
   // Основные элементы
@@ -49,22 +59,12 @@ const elements = {
   popupCaption: document.querySelector(".popup__caption")
 };
 
-// Настройки валидации
-const validationConfig = {
-  formSelector: '.popup__form',
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__button',
-  inactiveButtonClass: 'popup__button_disabled',
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__error_visible'
-};
-
 let userId;
 
 // Инициализация приложения
 function initApp() {
   setupEventListeners();
-  enableValidation(validationConfig);
+  enableValidation(validationConfig); // Передаем конфиг
   loadInitialData();
 }
 
@@ -76,7 +76,9 @@ function loadInitialData() {
       updateProfileInfo(userData);
       renderInitialCards(cards);
     })
-    .catch(console.error);
+    .catch(err => {
+      console.error('Ошибка:', err);
+    });
 }
 
 // Обновление информации профиля
@@ -102,7 +104,7 @@ function renderCard(cardData) {
     handleLikeClick, 
     handleDeleteClick
   );
-  elements.cardsContainer.append(cardElement);
+  elements.cardsContainer.prepend(cardElement);
 }
 
 // Установка обработчиков событий
@@ -124,19 +126,19 @@ function setupEventListeners() {
   elements.profileEditButton.addEventListener("click", () => {
     elements.nameInput.value = elements.profileTitle.textContent;
     elements.jobInput.value = elements.profileDescription.textContent;
-    clearValidation(elements.formEditProfile, validationConfig);
+    clearValidation(elements.formEditProfile, validationConfig); // Передаем конфиг
     openPopup(elements.popupTypeEdit);
   });
 
   // Открытие попапа добавления карточки
   elements.addButton.addEventListener("click", () => {
-    clearValidation(elements.formNewPlace, validationConfig);
+    clearValidation(elements.formNewPlace, validationConfig); // Передаем конфиг
     openPopup(elements.popupTypeNewCard);
   });
 
   // Открытие попапа аватара
   elements.profileImage.addEventListener("click", () => {
-    clearValidation(elements.avatarForm, validationConfig);
+    clearValidation(elements.avatarForm, validationConfig); // Передаем конфиг
     openPopup(elements.avatarPopup);
   });
 
@@ -146,7 +148,7 @@ function setupEventListeners() {
   elements.avatarForm.addEventListener("submit", handleAvatarSubmit);
 }
 
-// Обработчик клика по карточке
+// Обработчики карточек
 function handleCardClick(name, link) {
   elements.popupImage.src = link;
   elements.popupImage.alt = name;
@@ -154,17 +156,15 @@ function handleCardClick(name, link) {
   openPopup(elements.popupTypeImage);
 }
 
-// Обработчик лайка карточки
 function handleLikeClick(likeButton, cardId, likeCounter) {
   return handleLike(likeButton, cardId, likeCounter);
 }
 
-// Обработчик удаления карточки
 function handleDeleteClick(cardElement, cardId) {
   return handleDelete(cardElement, cardId);
 }
 
-// Обработчик формы редактирования профиля
+// Обработчики отправки форм
 function handleEditProfileSubmit(evt) {
   evt.preventDefault();
   
@@ -175,13 +175,14 @@ function handleEditProfileSubmit(evt) {
   updateProfile(elements.nameInput.value, elements.jobInput.value)
     .then(updateProfileInfo)
     .then(() => closePopup(elements.popupTypeEdit))
-    .catch(console.error)
+    .catch(err => {
+      console.error('Ошибка:', err);
+    })
     .finally(() => {
       submitButton.textContent = initialText;
     });
 }
 
-// Обработчик формы добавления карточки
 function handleAddCardSubmit(evt) {
   evt.preventDefault();
   
@@ -195,13 +196,14 @@ function handleAddCardSubmit(evt) {
       elements.formNewPlace.reset();
       closePopup(elements.popupTypeNewCard);
     })
-    .catch(console.error)
+    .catch(err => {
+      console.error('Ошибка:', err);
+    })
     .finally(() => {
       submitButton.textContent = initialText;
     });
 }
 
-// Обработчик формы аватара
 function handleAvatarSubmit(evt) {
   evt.preventDefault();
   
@@ -215,7 +217,9 @@ function handleAvatarSubmit(evt) {
       elements.avatarForm.reset();
       closePopup(elements.avatarPopup);
     })
-    .catch(console.error)
+    .catch(err => {
+      console.error('Ошибка:', err);
+    })
     .finally(() => {
       submitButton.textContent = initialText;
     });

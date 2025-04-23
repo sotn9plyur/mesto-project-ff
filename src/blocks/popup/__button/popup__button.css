@@ -32,6 +32,8 @@
 }
 
 .button.popup__button:disabled {
-  background-color: #313131;
+  background-color: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  color: rgba(0, 0, 0, 0.2);
 }
 

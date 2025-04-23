@@ -43,6 +43,10 @@ export function handleLike(likeButton, cardId, likeCounter) {
       likeCounter.textContent = updatedCard.likes.length;
       return updatedCard;
     })
+    .catch(err => {
+      console.error('Ошибка:', err);
+      throw err;
+    });
 }
 
 export function handleDelete(cardElement, cardId) {
@@ -50,4 +54,8 @@ export function handleDelete(cardElement, cardId) {
     .then(() => {
       cardElement.remove();
     })
+    .catch(err => {
+      console.error('Ошибка:', err);
+      throw err;
+    });
 }

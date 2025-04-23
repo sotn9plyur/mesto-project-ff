@@ -1,33 +1,29 @@
-// Настройки валидации
-const validationConfig = {
-    formSelector: '.popup__form',
-    inputSelector: '.popup__input',
-    submitButtonSelector: '.popup__button',
-    inactiveButtonClass: 'popup__button_disabled',
-    inputErrorClass: 'popup__input_type_error',
-    errorClass: 'popup__error_visible'
-  };
-  
-  // Показать ошибку
-  const showInputError = (formElement, inputElement, errorMessage, config) => {
+// validation.js
+
+// Функция показа ошибки
+function showInputError(formElement, inputElement, errorMessage, config) {
     const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+    if (!errorElement) return;
+    
     inputElement.classList.add(config.inputErrorClass);
     errorElement.textContent = errorMessage;
     errorElement.classList.add(config.errorClass);
-  };
+  }
   
-  // Скрыть ошибку
-  const hideInputError = (formElement, inputElement, config) => {
+  // Функция скрытия ошибки
+  function hideInputError(formElement, inputElement, config) {
     const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+    if (!errorElement) return;
+    
     inputElement.classList.remove(config.inputErrorClass);
     errorElement.textContent = '';
     errorElement.classList.remove(config.errorClass);
-  };
+  }
   
-  // Проверить валидность поля
-  const checkInputValidity = (formElement, inputElement, config) => {
+  // Функция проверки валидности поля
+  function checkInputValidity(formElement, inputElement, config) {
     if (inputElement.validity.patternMismatch) {
-      inputElement.setCustomValidity(inputElement.dataset.errorMessage);
+      inputElement.setCustomValidity(inputElement.dataset.errorMessage || 'Некорректный формат');
     } else {
       inputElement.setCustomValidity("");
     }
@@ -37,59 +33,68 @@ const validationConfig = {
     } else {
       hideInputError(formElement, inputElement, config);
     }
-  };
+  }
   
-  // Проверить все поля на валидность
-  const hasInvalidInput = (inputList) => {
-    return inputList.some(inputElement => {
-      return !inputElement.validity.valid;
-    });
-  };
+  // Функция проверки невалидных полей
+  function hasInvalidInput(inputList) {
+    return inputList.some(inputElement => !inputElement.validity.valid);
+  }
   
-  // Переключить состояние кнопки
-  const toggleButtonState = (inputList, buttonElement, config) => {
+  // Функция изменения состояния кнопки
+  function toggleButtonState(inputList, buttonElement, config) {
     if (hasInvalidInput(inputList)) {
-      buttonElement.disabled = true;
-      buttonElement.classList.add(config.inactiveButtonClass);
+      disableButton(buttonElement, config);
     } else {
-      buttonElement.disabled = false;
-      buttonElement.classList.remove(config.inactiveButtonClass);
+      enableButton(buttonElement, config);
     }
-  };
+  }
   
-  // Установить обработчики событий
-  const setEventListeners = (formElement, config) => {
+  // Включение кнопки
+  function enableButton(buttonElement, config) {
+    buttonElement.disabled = false;
+    buttonElement.classList.remove(config.inactiveButtonClass);
+  }
+  
+  // Отключение кнопки
+  function disableButton(buttonElement, config) {
+    buttonElement.disabled = true;
+    buttonElement.classList.add(config.inactiveButtonClass);
+  }
+  
+  // Установка обработчиков событий
+  function setEventListeners(formElement, config) {
     const inputList = Array.from(formElement.querySelectorAll(config.inputSelector));
     const buttonElement = formElement.querySelector(config.submitButtonSelector);
-    
+  
     toggleButtonState(inputList, buttonElement, config);
-    
+  
     inputList.forEach(inputElement => {
       inputElement.addEventListener('input', () => {
         checkInputValidity(formElement, inputElement, config);
         toggleButtonState(inputList, buttonElement, config);
       });
     });
-  };
+  }
   
-  // Включить валидацию всех форм
-  export const enableValidation = (config) => {
+  // Включение валидации всех форм
+  export function enableValidation(config) {
     const formList = Array.from(document.querySelectorAll(config.formSelector));
     formList.forEach(formElement => {
       setEventListeners(formElement, config);
     });
-  };
+  }
   
-  // Очистить ошибки валидации
-  export const clearValidation = (formElement, config) => {
+  // Очистка ошибок валидации
+  export function clearValidation(formElement, config) {
     const inputList = Array.from(formElement.querySelectorAll(config.inputSelector));
     const buttonElement = formElement.querySelector(config.submitButtonSelector);
-    
+  
     inputList.forEach(inputElement => {
       hideInputError(formElement, inputElement, config);
       inputElement.setCustomValidity("");
     });
-    
-    buttonElement.disabled = true;
-    buttonElement.classList.add(config.inactiveButtonClass);
-  };
+  
+    if (buttonElement) {
+      disableButton(buttonElement, config);
+    }
+  }
