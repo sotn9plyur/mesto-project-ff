@@ -30,6 +30,7 @@ const config = {
     .then(checkResponse);
   };
   
+
   // Обновление профиля
   export const updateProfile = (name, about) => {
     return fetch(`${config.baseUrl}/users/me`, {
@@ -85,12 +86,30 @@ const config = {
   
   // Обновление аватара
   export const updateAvatar = (avatarUrl) => {
-    return fetch(`${config.baseUrl}/users/me/avatar`, {
-      method: 'PATCH',
-      headers: config.headers,
-      body: JSON.stringify({
-        avatar: avatarUrl
-      })
+  return fetch(`${config.baseUrl}/users/me/avatar`, {
+    method: 'PATCH',
+    headers: {
+      authorization: config.headers.authorization,
+      'Content-Type': 'application/json'
+    }, 
+    body: JSON.stringify({
+      avatar: avatarUrl
     })
-    .then(checkResponse);
-  };
+  })
+  .then(checkResponse);
+}
+
+
+/*export const updateAvatar = (avatarUrl) => {
+  return fetch(`${config.baseUrl}/users/me/avatar`, {
+    method: 'PATCH',
+    headers: {
+      authorization: config.headers.authorization,
+      'Content-Type': 'application/json' / Важно: именно 'application/json'/
+    },
+    body: JSON.stringify({
+      avatar: avatarUrl // Ключ должен быть "avatar" как у коллеги
+    })
+  })
+  .then(res => config.response(res));
+}*/

@@ -52,7 +52,7 @@ const elements = {
   jobInput: document.querySelector(".popup__input_type_description"),
   cardNameInput: document.querySelector(".popup__input_type_card-name"),
   cardLinkInput: document.querySelector(".popup__input_type_url"),
-  avatarUrlInput: document.querySelector(".popup__input_type_url"),
+  avatarUrlInput: document.querySelector("#avatarUrl"),
   
   // Элементы попапа изображения
   popupImage: document.querySelector(".popup__image"),
@@ -182,6 +182,7 @@ function handleEditProfileSubmit(evt) {
       submitButton.textContent = initialText;
     });
 }
+
 
 function handleAddCardSubmit(evt) {
   evt.preventDefault();
